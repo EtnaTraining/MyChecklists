@@ -17,18 +17,28 @@ const todolist = [
 
 
 class Todolist extends React.Component {
-
+    state = {
+        todolist
+    }
+    
+    _toggle = (item) => {
+        this.setState({
+            todolist : this.state.todolist.map(todo => (todo === item) ? {...todo, done: !todo.done}  : todo)
+        });
+        // console.log("todolist", this.state.todolist); 
+    };
     _keyExtractor = (item, index) => index;
     _renderItem = ({item}) => (
-      <Todo item={item} />
+      <Todo item={item} onPress={() => this._toggle(item)}/>
     );
   
     render() {
+        // console.log("rendering:", this.state.todolist);
       return (
         <View style={{ flex: 1, marginTop: 20 }}>
           <FlatList 
             keyExtractor={this._keyExtractor}
-            data={todolist} 
+            data={this.state.todolist} 
             renderItem={this._renderItem} 
           />
         </View>

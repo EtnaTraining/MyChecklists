@@ -3,21 +3,18 @@ import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 import {  MaterialCommunityIcons } from '@expo/vector-icons';
 
 class Todo extends React.Component {
-    state = {
-      done: this.props.item.done
-    }
+    // state = {
+    //   done: this.props.item.done
+    // }
     render() {
+        // console.log(this.props.item);
       return (
         <TouchableHighlight
-        onPress={() => {
-          this.setState({done: !this.state.done})
-        }}
-        underlayColor='#ddd'>
+            onPress={this.props.onPress}
+            underlayColor='#ddd'>
         <View style={styles.row}>
-          
-          { this.state.done ? 
+          { this.props.item.done ? 
             <MaterialCommunityIcons name="checkbox-marked-outline" size={24} color="rgb(4, 169, 235)" /> :
-            
             <MaterialCommunityIcons name="checkbox-blank-outline" size={24} color="rgb(4, 169, 235)" />
           }
           <Text style={styles.text}>{this.props.item.key}</Text>
