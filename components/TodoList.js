@@ -103,6 +103,7 @@ class Todolist extends React.PureComponent {
         {Platform.OS === "android" ? (
           <ActionButton
             buttonColor={TINT_COLOR}
+            elevation={12}
             onPress={() => {
               this.props.navigation.navigate("EditTodo", {
                 onAdd: this._add,

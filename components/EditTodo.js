@@ -115,7 +115,7 @@ export default class EditTodo extends React.Component {
     const textInputStyleOnAndroid =
       Platform.OS === "android" ? { paddingBottom: 7, paddingLeft: 7 } : {};
     return (
-      <View>
+      <View style={{ backgroundColor: "#E9E9EF", flex: 1 }}>
         <View style={[styles.todowrapper, { padding: 15 }]}>
           <TextInput
             style={[textInputStyleOnAndroid, styles.label]}

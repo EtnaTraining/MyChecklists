@@ -16,6 +16,9 @@ const AppNavigator = StackNavigator(
   },
   {
     mode: "modal",
+    cardStyle: {
+      backgroundColor: TINT_COLOR
+    },
     navigationOptions:
       Platform.OS === "android"
         ? {
