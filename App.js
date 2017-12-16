@@ -3,6 +3,7 @@ import { Platform } from "react-native";
 import { StackNavigator } from "react-navigation";
 import TodoList from "./components/TodoList";
 import EditTodo from "./components/EditTodo";
+import { TINT_COLOR } from "./components/styles/common";
 
 const AppNavigator = StackNavigator(
   {
@@ -15,12 +16,16 @@ const AppNavigator = StackNavigator(
   },
   {
     mode: "modal",
-    navigationOptions: {
-      headerStyle: {
-        marginTop: Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight,
-        backgroundColor: "rgb(249, 249, 249)"
-      }
-    }
+    navigationOptions:
+      Platform.OS === "android"
+        ? {
+            headerTintColor: "white",
+            headerStyle: {
+              marginTop: Expo.Constants.statusBarHeight,
+              backgroundColor: TINT_COLOR
+            }
+          }
+        : {}
   }
 );
 

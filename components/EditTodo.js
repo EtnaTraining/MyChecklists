@@ -121,6 +121,7 @@ export default class EditTodo extends React.Component {
             style={[textInputStyleOnAndroid, styles.label]}
             placeholder="Name of the item"
             autoFocus
+            underlineColorAndroid={TINT_COLOR}
             value={this.state.text}
             onSubmitEditing={this._save}
             onChangeText={text => this.setState({ text })}
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white"
   },
   headerBtn: {
-    color: TINT_COLOR,
+    color: Platform.OS === "ios" ? TINT_COLOR : "white",
     padding: 10,
     fontSize: 18
   },
@@ -196,5 +197,5 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 18
   },
-  closeBtn: { padding: 10, color: TINT_COLOR }
+  closeBtn: { padding: 10, color: Platform.OS === "ios" ? TINT_COLOR : "white" }
 });
