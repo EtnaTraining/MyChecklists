@@ -22,4 +22,4 @@ https://expo.io/@acaland/mychecklists
 
 <img src="https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/1_android.png" width="50%">
 
-<img src="https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/1_android.png" width="50%">
+<img src="https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/2_android.png" width="50%">
