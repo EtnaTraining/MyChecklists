@@ -15,6 +15,7 @@ import {
   TimePickerAndroid,
   LayoutAnimation
 } from "react-native";
+import DueDate from "./DueDate";
 import moment from "moment";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Notifications, Permissions } from "expo";
@@ -25,8 +26,7 @@ export default class EditTodo extends React.Component {
     text: "",
     done: false,
     shouldRemind: false,
-    dueDate: new Date(),
-    isPickerVisible: false
+    dueDate: new Date()
   };
 
   async componentWillMount() {
@@ -49,15 +49,7 @@ export default class EditTodo extends React.Component {
     }
   }
 
-  componentWillUpdate() {
-    LayoutAnimation.easeInEaseOut();
-  }
-
-  _save = async () => {
-    if (!this.state.text) {
-      return;
-    }
-
+  _handleNotification = async () => {
     let shouldRemind = this.state.shouldRemind;
     let notificationID = this.state.notificationID;
     if (
@@ -82,11 +74,21 @@ export default class EditTodo extends React.Component {
         }
       );
       this.setState({ notificationID });
+    } else if (!shouldRemind && notificationID != null) {
+      // We change our mind and we want to cancel the scheduling of notification
+      await Notifications.cancelScheduledNotificationAsync(notificationID);
     } else {
       console.log("Due Date is before now");
       shouldRemind = false;
     }
+    return { shouldRemind, notificationID };
+  };
 
+  _save = async () => {
+    if (!this.state.text) {
+      return;
+    }
+    const { shouldRemind, notificationID } = await this._handleNotification();
     const { navigation } = this.props;
     Keyboard.dismiss();
     const todo = {
@@ -96,6 +98,8 @@ export default class EditTodo extends React.Component {
       shouldRemind: shouldRemind,
       notificationID: shouldRemind ? notificationID : null
     };
+    console.log("item: ", todo);
+
     if (navigation.state.params["item"]) {
       navigation.state.params.onEndEditing({
         ...todo,
@@ -105,56 +109,6 @@ export default class EditTodo extends React.Component {
       navigation.state.params.onAdd(todo);
     }
     navigation.goBack(null);
-  };
-
-  _showPicker = () => {
-    Keyboard.dismiss();
-    if (Platform.OS === "ios") {
-      this.setState({ isPickerVisible: !this.state.isPickerVisible });
-    } else {
-      this._showAndroidDatePicker();
-    }
-  };
-
-  _showAndroidDatePicker = async () => {
-    try {
-      const { action, year, month, day } = await DatePickerAndroid.open({
-        date: this.state.dueDate
-      });
-      if (action !== DatePickerAndroid.dismissedAction) {
-        this.setState({
-          dueDate: moment(this.state.dueDate)
-            .year(year)
-            .month(month)
-            .date(day)
-            .toDate()
-        });
-        this._showAndroidTimePicker();
-      }
-    } catch ({ code, message }) {
-      console.warn("Cannot open date picker", message);
-    }
-  };
-
-  _showAndroidTimePicker = async () => {
-    try {
-      const { action, hour, minute } = await TimePickerAndroid.open({
-        hour: moment(this.state.dueDate).hour(),
-        minute: moment(this.state.dueDate).minute(),
-        is24Hour: true // Will display '2 PM'
-      });
-      if (action !== TimePickerAndroid.dismissedAction) {
-        // Selected hour (0-23), minute (0-59)
-        this.setState({
-          dueDate: moment(this.state.dueDate)
-            .hour(hour)
-            .minute(minute)
-            .toDate()
-        });
-      }
-    } catch ({ code, message }) {
-      console.warn("Cannot open time picker", message);
-    }
   };
 
   render() {
@@ -182,65 +136,16 @@ export default class EditTodo extends React.Component {
             />
           </View>
 
-          <TouchableOpacity activeOpacity={0.6} onPress={this._showPicker}>
-            <View style={styles.pickerRow}>
-              <Text style={styles.label}>Due Date</Text>
-              <Text
-                style={[
-                  styles.label,
-                  this.state.isPickerVisible ? { color: TINT_COLOR } : {}
-                ]}
-              >
-                {moment(this.state.dueDate).format("lll")}
-              </Text>
-            </View>
-          </TouchableOpacity>
-
-          <View
-            style={[
-              { overflow: "hidden" },
-              this.state.isPickerVisible ? {} : { maxHeight: 0 }
-            ]}
-          >
-            <DatePickerIOS
-              date={this.state.dueDate}
-              onDateChange={date => this.setState({ dueDate: date })}
-            />
-          </View>
+          <DueDate
+            styles={{ label: styles.label }}
+            dueDate={this.state.dueDate}
+            onDateChange={date => this.setState({ dueDate: date })}
+          />
         </View>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  todowrapper: {
-    marginTop: 30,
-    paddingHorizontal: 10,
-    backgroundColor: "white"
-  },
-  headerBtn: {
-    color: TINT_COLOR,
-    padding: 10,
-    fontSize: 18
-  },
-  remindRow: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#dddddd",
-    paddingVertical: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
-  },
-  pickerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 15
-  },
-  label: {
-    fontSize: 18
-  }
-});
 
 EditTodo.navigationOptions = ({ navigation }) => {
   return {
@@ -261,14 +166,35 @@ EditTodo.navigationOptions = ({ navigation }) => {
         {Platform.OS === "ios" ? (
           <Text style={styles.headerBtn}>Cancel</Text>
         ) : (
-          <MaterialIcons
-            name="close"
-            size={28}
-            style={{ padding: 10, color: TINT_COLOR }}
-          />
+          <MaterialIcons name="close" size={28} style={styles.closeBtn} />
         )}
       </TouchableOpacity>
     ),
     title: navigation.state.params.headerTitle
   };
 };
+
+const styles = StyleSheet.create({
+  todowrapper: {
+    marginTop: 30,
+    paddingHorizontal: 10,
+    backgroundColor: "white"
+  },
+  headerBtn: {
+    color: TINT_COLOR,
+    padding: 10,
+    fontSize: 18
+  },
+  remindRow: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#dddddd",
+    paddingVertical: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  label: {
+    fontSize: 18
+  },
+  closeBtn: { padding: 10, color: TINT_COLOR }
+});

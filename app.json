@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "mychecklist-starter",
-    "description": "An empty new project",
-    "slug": "mychecklist-starter",
+    "name": "MyChecklists",
+    "description": "MyChecklist App",
+    "slug": "mychecklists",
     "privacy": "public",
     "sdkVersion": "23.0.0",
     "version": "1.0.0",
@@ -10,9 +10,9 @@
     "primaryColor": "#cccccc",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#48A8E5"
     },
     "ios": {
       "supportsTablet": true
