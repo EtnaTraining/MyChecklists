@@ -14,12 +14,12 @@ https://expo.io/@acaland/mychecklists
 
 ### iOS
 
-<img src="https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/1_ios.png" width="50%">
-
-<img src="https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/2_ios.png" width="50%">
+TodoList       | EditTodo
+-------------- | --------------
+<img src="https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/1_ios.png"> | <img src="https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/2_ios.png">
 
 ### Android
 
-<img src="https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/1_android.png" width="50%">
-
-<img src="https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/2_android.png" width="50%">
+TodoList       | EditTodo
+-------------- | --------------
+<img src="https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/1_android.png"> | <img src="https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/2_android.png">
