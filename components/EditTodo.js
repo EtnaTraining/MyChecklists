@@ -132,6 +132,7 @@ export default class EditTodo extends React.Component {
           <View style={styles.remindRow}>
             <Text style={styles.label}>Remind me</Text>
             <Switch
+              onTintColor={TINT_COLOR}
               onValueChange={value => this.setState({ shouldRemind: value })}
               value={this.state.shouldRemind}
             />
