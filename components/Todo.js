@@ -1,36 +1,57 @@
 import React from "react";
-import { View, Text, TouchableHighlight, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TouchableHighlight,
+  StyleSheet,
+  TouchableOpacity
+} from "react-native";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import Swipeout from "react-native-swipeout";
+import { TINT_COLOR } from "./styles/common";
 
 class Todo extends React.PureComponent {
-  // state = {
-  //   done: this.props.item.done
-  // }
   render() {
-    // console.log("rendering:", this.props.item);
+    const deleteButton = [
+      { text: "Delete", type: "delete", onPress: this.props.onDelete }
+    ];
     return (
-      <TouchableHighlight onPress={this.props.onPress} underlayColor="#ddd">
-        <View style={styles.row}>
-          {this.props.item.done ? (
+      <Swipeout
+        right={deleteButton}
+        autoClose
+        style={{ backgroundColor: "white" }}
+      >
+        <TouchableHighlight onPress={this.props.onPress} underlayColor="#ddd">
+          <View style={styles.row}>
+            {this.props.item.done ? (
+              <MaterialCommunityIcons
+                name="checkbox-marked-outline"
+                size={24}
+                color={TINT_COLOR}
+              />
+            ) : (
+              <MaterialCommunityIcons
+                name="checkbox-blank-outline"
+                size={24}
+                color={TINT_COLOR}
+              />
+            )}
+            <Text style={styles.text}>{this.props.item.key}</Text>
+            <TouchableOpacity onPress={this.props.onInfoPress}>
+              <Ionicons
+                name="ios-information-circle-outline"
+                size={28}
+                color={TINT_COLOR}
+              />
+            </TouchableOpacity>
             <MaterialCommunityIcons
-              name="checkbox-marked-outline"
-              size={24}
-              color="rgb(4, 169, 235)"
+              name="chevron-right"
+              size={22}
+              color="gray"
             />
-          ) : (
-            <MaterialCommunityIcons
-              name="checkbox-blank-outline"
-              size={24}
-              color="rgb(4, 169, 235)"
-            />
-          )}
-          <Text style={styles.text}>{this.props.item.key}</Text>
-          <TouchableOpacity onPress={this.props.onEdit}>
-            <Ionicons name="ios-information-circle-outline" size={28} color="rgb(4, 169, 235)"/>
-          </TouchableOpacity>
-          <MaterialCommunityIcons name="chevron-right" size={22} color="gray"/>
-        </View>
-      </TouchableHighlight>
+          </View>
+        </TouchableHighlight>
+      </Swipeout>
     );
   }
 }

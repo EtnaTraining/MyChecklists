@@ -1,23 +1,26 @@
 import React from "react";
-import { StyleSheet, Text, View, Platform } from "react-native";
+import { Platform } from "react-native";
 import { StackNavigator } from "react-navigation";
 import TodoList from "./components/TodoList";
-import AddTodo from "./components/AddTodo";
+import EditTodo from "./components/EditTodo";
 
 const AppNavigator = StackNavigator(
   {
     TodoList: {
       screen: TodoList
     },
-    AddTodo: {
-      screen: AddTodo
+    EditTodo: {
+      screen: EditTodo
     }
   },
   {
-    // headerMode: 'float',
-    // initialRouteName: 'AddTodo',
     mode: "modal",
-    navigationOptions: { headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight } }
+    navigationOptions: {
+      headerStyle: {
+        marginTop: Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight,
+        backgroundColor: "rgb(249, 249, 249)"
+      }
+    }
   }
 );
 

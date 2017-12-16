@@ -1,10 +1,19 @@
 import React from "react";
-import { View, FlatList, Button, TouchableOpacity } from "react-native";
+import {
+  View,
+  FlatList,
+  Button,
+  TouchableOpacity,
+  AsyncStorage,
+  Platform
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import ActionButton from "react-native-action-button";
+import { TINT_COLOR } from "./styles/common";
 
 import Todo from "./Todo";
 
-const todolist = [
+const initialTodolist = [
   { key: "Buy the milk", done: false },
   { key: "Submit the app", done: false },
   { key: "Write an article", done: true },
@@ -18,73 +27,117 @@ const todolist = [
 
 class Todolist extends React.PureComponent {
   state = {
-    todolist
+    todolist: []
   };
+
+  async _loadList() {
+    let response = await AsyncStorage.getItem("todolist");
+    let todolist = (await JSON.parse(response)) || initialTodolist;
+    this.setState({ todolist });
+  }
+
+  async _updateList(todolist) {
+    this.setState({ todolist });
+    await AsyncStorage.setItem("todolist", JSON.stringify(todolist));
+  }
+
   componentDidMount() {
-    // console.log(this.props.navigation.set);
-    this.props.navigation.setParams({onAdd: this._onAdd});
+    this._loadList();
+    this.props.navigation.setParams({ onAdd: this._add });
   }
-  _onAdd = item => {
-    this.setState({todolist: [...this.state.todolist, item]});
-  }
-  _onSave = item => {
-    
-  }
+
+  _add = item => {
+    let todolist = [...this.state.todolist, item];
+    this._updateList(todolist);
+  };
+
+  _save = item => {
+    let todolist = this.state.todolist.map(
+      todo => (todo.id === item.id ? item : todo)
+    );
+    this._updateList(todolist);
+  };
 
   _toggle = item => {
-    this.setState({
-      todolist: this.state.todolist.map(
-        todo => (todo === item ? { ...todo, done: !todo.done } : todo)
-      )
-    });
-    // console.log("todolist", this.state.todolist);
+    let todolist = this.state.todolist.map(
+      todo => (todo === item ? { ...todo, done: !todo.done } : todo)
+    );
+    this._updateList(todolist);
   };
+
+  _delete = item => {
+    let todolist = this.state.todolist.filter(todo => todo !== item);
+    setTimeout(() => this._updateList(todolist), 100);
+  };
+
   _edit = item => {
-    // console.log("edit", item);
-    this.props.navigation.navigate('AddTodo', {item, onSave: this._onSave});
-  }
-  _keyExtractor = (item, index) => index;
+    this.props.navigation.navigate("EditTodo", {
+      item,
+      onEndEditing: this._save,
+      headerTitle: "Edit Todo"
+    });
+  };
+
+  _keyExtractor = (item, index) => {
+    item.id = index;
+    return index;
+  };
+
   _renderItem = ({ item }) => (
-    <Todo item={item} onPress={() => this._toggle(item)} onEdit={() => this._edit(item)}/>
+    <Todo
+      item={item}
+      onPress={() => this._toggle(item)}
+      onInfoPress={() => this._edit(item)}
+      onDelete={() => this._delete(item)}
+    />
   );
 
-  // componentDidMount() {
-  //   this.props.navigation.navigate('AddTodo');
-  // }
-
   render() {
-    // console.log("rendering:", this.state.todolist);
-    
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
         <FlatList
           keyExtractor={this._keyExtractor}
           data={this.state.todolist}
           renderItem={this._renderItem}
         />
+        {Platform.OS === "android" ? (
+          <ActionButton
+            buttonColor={TINT_COLOR}
+            onPress={() => {
+              this.props.navigation.navigate("EditTodo", {
+                onAdd: this._add,
+                headerTitle: "Add Todo"
+              });
+            }}
+          />
+        ) : null}
       </View>
     );
   }
 }
 
-Todolist.navigationOptions = ({navigation}) => {
-
+Todolist.navigationOptions = ({ navigation }) => {
   return {
-    title: "Checklists",
-    headerRight: (
-      <TouchableOpacity
-        onPress={() => navigation.navigate('AddTodo', {onAdd: navigation.state.params.onAdd}) }
+    title: "MyChecklists",
+    headerRight:
+      Platform.OS === "ios" ? (
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("EditTodo", {
+              onAdd: navigation.state.params.onAdd,
+              headerTitle: "Add Todo"
+            })
+          }
         >
-        <Ionicons
-          style={{ paddingHorizontal: 15 }}
-          name="ios-add-outline"
-          size={34}
-          color="rgb(4, 169, 235)"
-        />
-      </TouchableOpacity>
-    )
-  }
-  
+          <Ionicons
+            style={{ paddingHorizontal: 15 }}
+            name="ios-add-outline"
+            size={34}
+            color={TINT_COLOR}
+          />
+        </TouchableOpacity>
+      ) : null
+  };
 };
 
 export default Todolist;
