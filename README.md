@@ -14,8 +14,7 @@ https://expo.io/@acaland/mychecklists
 
 ### iOS
 
-![alt text](https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/1_ios.png
-| width=300)
+![alt text](https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/1_ios.png)
 
 ![alt text](https://raw.githubusercontent.com/EtnaTraining/MyChecklist/master/screenshots/2_ios.png)
 
