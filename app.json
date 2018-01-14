@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "mychecklist-starter",
-    "description": "An empty new project",
+    "name": "MyChecklist-Starter",
+    "description": "Simple Checklist app",
     "slug": "mychecklist-starter",
     "privacy": "public",
-    "sdkVersion": "23.0.0",
+    "sdkVersion": "24.0.0",
     "version": "1.0.0",
     "orientation": "portrait",
     "primaryColor": "#cccccc",
