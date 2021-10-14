@@ -4,7 +4,6 @@
     "description": "Simple Checklist app",
     "slug": "mychecklist-starter",
     "privacy": "public",
-    "sdkVersion": "24.0.0",
     "version": "1.0.0",
     "orientation": "portrait",
     "primaryColor": "#cccccc",
