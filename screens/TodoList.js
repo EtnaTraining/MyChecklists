@@ -17,13 +17,34 @@ const initialTodolist = [
   { text: 'Buy a present to Antonio', done: false },
 ];
 
-export default function Todolist({ route }) {
+export default function Todolist({ navigation, route }) {
   const [todolist, setTodoList] = useState(initialTodolist);
-  const _keyExtractor = (item, index) => index.toString();
-  const _renderItem = ({ item }) => <Todo item={item} />;
+  const _keyExtractor = (item, index) => {
+    item.id = index;
+    return index.toString();
+  };
+  const _renderItem = ({ item }) => (
+    <Todo
+      item={item}
+      onPress={() => _toggle(item)}
+      onInfoPress={() => navigation.navigate('AddTodo', item)}
+    />
+  );
 
-  const _add = async (item) => {
+  const _add = (item) => {
     setTodoList([...todolist, item]);
+  };
+
+  const _update = (item) =>
+    setTodoList(todolist.map((todo) => (todo.id == item.id ? item : todo)));
+
+  const _toggle = (item) => {
+    console.log('toggling', item);
+    setTodoList(
+      todolist.map((todo) =>
+        todo == item ? { ...todo, done: !todo.done } : todo
+      )
+    );
   };
 
   React.useEffect(() => {
@@ -41,18 +62,23 @@ export default function Todolist({ route }) {
       await AsyncStorage.setItem('todolist', JSON.stringify(todolist));
       console.log('saving to asyncStorage');
     };
-    if (route.params?.newItem) {
-      _saveList();
-    }
+    // if (route.params?.newItem) {
+    //   _saveList();
+    // }
+    _saveList();
   }, [todolist]);
 
   React.useEffect(() => {
+    console.log('route.params', route.params);
     if (route.params?.newItem) {
       // Post updated, do something with `route.params.post`
       // For example, send the post to the server
       _add(route.params?.newItem);
     }
-  }, [route.params?.newItem]);
+    if (route.params?.updatedItem) {
+      _update(route.params.updatedItem);
+    }
+  }, [route.params]);
 
   return (
     <View style={{ flex: 1 }}>

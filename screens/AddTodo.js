@@ -14,27 +14,38 @@ import DueDate from '../components/DueDate';
 import { TINT_COLOR } from '../components/styles/common';
 import { MaterialIcons } from '@expo/vector-icons';
 
-export default function AddTodo({ navigation }) {
+export default function AddTodo({ navigation, route }) {
   const [text, setText] = useState('');
   const [done, setDone] = useState(false);
   const [dueDate, setDueDate] = useState(new Date());
   const [shouldRemind, setShouldReming] = useState(false);
 
+  React.useEffect(() => {
+    console.log('here', route.params);
+    if (route.params) {
+      setText(route.params.text);
+    }
+  }, []);
+
   const inputRef = useRef();
 
   const _save = () => {
     console.log('text', text);
-    const newItem = {
+    const item = {
       text,
       done,
       dueDate: dueDate.toString(),
     };
-    console.log(newItem);
+    if (route.params?.id) {
+      item.id = route.params.id;
+      item.done = route.params.done;
+    }
+    console.log(item);
     // navigation.goBack();
     navigation.navigate({
       name: 'TodoList',
-      params: { newItem },
-      merge: true,
+      params: route.params ? { updatedItem: item } : { newItem: item },
+      // merge: true,
     });
   };
 
